@@ -4,17 +4,20 @@
   "bin": {
     "under-the-wave": "./lib/bin.js"
   },
+  "author": "Alexey Litvinov",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sullenor/under-the-wave.git"
+  },
   "dependencies": {
     "@babel/core": "7.12.16",
     "@babel/types": "7.12.13",
-    "html-minifier": "4.0.0",
     "minimist": "1.2.5",
     "pino": "6.11.1",
     "pino-colada": "2.1.0",
     "pino-http": "5.5.0",
     "postcss": "8.2.6",
-    "posthtml": "0.15.1",
-    "terser": "5.6.0"
+    "posthtml": "0.15.1"
   },
   "devDependencies": {
     "jest": "26.6.3",
