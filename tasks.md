@@ -1,11 +1,12 @@
 ## Tasks
-- finish resolver
 - add server updates?
+  - in memory cache
+  - watch dir for updates (chokidar)
 - add file support
 
 ## Nice to have
-- add cache to resolver
-- improve css support
+- error boundaries
+- proper css url parse
 - test inline-process-env and unfold-condition plugins with other plugins
 - add parallel support to server
 - plot graph

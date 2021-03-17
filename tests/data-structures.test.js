@@ -1,7 +1,13 @@
 /* globals expect,test */
 'use strict'
 
-const { List } = require('../lib/data-types')
+const { ListItem, List } = require('../lib/data-structures')
+
+test('ListItem', () => {
+  const head = new ListItem(1)
+  head.next = new ListItem(2)
+  expect([...head]).toEqual([1, 2])
+})
 
 test('List', () => {
   const list = new List()

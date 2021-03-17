@@ -13,12 +13,8 @@ async function transform (content, plugins) {
 }
 
 test('fix module paths', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     import a from './a'
@@ -29,7 +25,7 @@ import a from "/a";
 import "/b";
   `.trim()
 
-  const result = await transform(code, [pluginFixModulePath(options)])
+  const result = await transform(code, [pluginFixModulePath(abspath, resolve)])
 
   expect(result).toBe(expected)
 })

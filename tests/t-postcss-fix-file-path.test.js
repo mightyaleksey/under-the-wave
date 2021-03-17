@@ -13,12 +13,8 @@ async function transform (content, plugins) {
 }
 
 test('update @import', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     @import url('./a');
@@ -29,17 +25,13 @@ test('update @import', async () => {
     @import './b';
   `
 
-  const result = await transform(code, [pluginFixFilePath(options)])
+  const result = await transform(code, [pluginFixFilePath(abspath, resolve)])
   expect(result).toBe(expected)
 })
 
 test('update background', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     .foo {
@@ -54,6 +46,6 @@ test('update background', async () => {
     }
   `
 
-  const result = await transform(code, [pluginFixFilePath(options)])
+  const result = await transform(code, [pluginFixFilePath(abspath, resolve)])
   expect(result).toBe(expected)
 })

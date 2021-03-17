@@ -12,12 +12,8 @@ async function transform (content, plugins) {
 }
 
 test('update img path', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     <img src='./a.png' />
@@ -26,17 +22,13 @@ test('update img path', async () => {
     <img src="/a.png">
   `
 
-  const result = await transform(code, [pluginFixFilePath(options)])
+  const result = await transform(code, [pluginFixFilePath(abspath, resolve)])
   expect(result).toBe(expected)
 })
 
 test('update link path', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     <link rel='stylesheet' href='./a.css' />
@@ -45,25 +37,23 @@ test('update link path', async () => {
     <link rel="stylesheet" href="/a.css">
   `
 
-  const result = await transform(code, [pluginFixFilePath(options)])
+  const result = await transform(code, [pluginFixFilePath(abspath, resolve)])
   expect(result).toBe(expected)
 })
 
 test('update script path', async () => {
-  const options = {
-    abspath: '/',
-    resolve (a, b) {
-      return path.resolve(a, b)
-    }
-  }
+  const abspath = '/'
+  const resolve = (a, b) => path.resolve(a, b)
 
   const code = `
     <script type=module src=./a.js></script>
+    <script type="text/javascript" src=./b.js></script>
   `
   const expected = `
     <script type="module" src="/a.js"></script>
+    <script type="text/javascript" src="./b.js"></script>
   `
 
-  const result = await transform(code, [pluginFixFilePath(options)])
+  const result = await transform(code, [pluginFixFilePath(abspath, resolve)])
   expect(result).toBe(expected)
 })
