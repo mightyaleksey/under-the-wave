@@ -21,8 +21,8 @@ test('fix module paths', async () => {
     import './b'
   `
   const expected = `
-import a from "/a";
-import "/b";
+import a from "/a?t=m";
+import "/b?t=m";
   `.trim()
 
   const result = await transform(code, [pluginFixModulePath(abspath, resolve)])

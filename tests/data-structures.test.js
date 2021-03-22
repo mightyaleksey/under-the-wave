@@ -9,6 +9,11 @@ test('ListItem', () => {
   expect([...head]).toEqual([1, 2])
 })
 
+test('ListItem.from', () => {
+  const head = ListItem.from(1, 2, 3)
+  expect([...head]).toEqual([1, 2, 3])
+})
+
 test('List', () => {
   const list = new List()
   list.push(1).push(2).push(3)

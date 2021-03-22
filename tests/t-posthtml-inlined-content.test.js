@@ -26,13 +26,13 @@ test('handle empty input properly', async () => {
 test('transform script', async () => {
   const abspath = '/'
   const resolve = (a, b) => path.resolve(a, b)
-  const context = {}
+  const context = { type: 'module' }
 
   const code = `
     <script type=module>import './a.js'</script>
   `
   const expected = `
-    <script type="module">import "/a.js";</script>
+    <script type="module">import "/a.js?t=m";</script>
   `
 
   const result = await transform(code, [pluginInlinedContent(abspath, resolve, context)])
@@ -42,7 +42,7 @@ test('transform script', async () => {
 test('transform style', async () => {
   const abspath = '/'
   const resolve = (a, b) => path.resolve(a, b)
-  const context = {}
+  const context = { type: 'module' }
 
   const code = `
     <style>.a { background: url(./a.png); }</style>
