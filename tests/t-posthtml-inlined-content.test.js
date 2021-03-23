@@ -48,7 +48,7 @@ test('transform style', async () => {
     <style>.a { background: url(./a.png); }</style>
   `
   const expected = `
-    <style>.a { background: url(/a.png); }</style>
+    <style>.a{background:url(/a.png)}</style>
   `
 
   const result = await transform(code, [pluginInlinedContent(abspath, resolve, context)])

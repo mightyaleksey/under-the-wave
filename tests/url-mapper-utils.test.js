@@ -1,11 +1,11 @@
 /* globals expect,test */
 'use strict'
 
-const { addparam, moduletype } = require('../lib/url-mapper-utils')
+const { addParam, moduletype } = require('../lib/url-mapper-utils')
 
-test('addparam', () => {
-  expect(addparam('./foo.js', 't', 'm')).toBe('./foo.js?t=m')
-  expect(addparam('./foo.js?a=b', 't', 'm')).toBe('./foo.js?a=b&t=m')
+test('addParam', () => {
+  expect(addParam('./foo.js', 't', 'm')).toBe('./foo.js?t=m')
+  expect(addParam('./foo.js?a=b', 't', 'm')).toBe('./foo.js?a=b&t=m')
 })
 
 test('moduletype', () => {
