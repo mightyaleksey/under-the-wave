@@ -4,6 +4,7 @@
   "bin": {
     "under-the-wave": "./lib/bin.js"
   },
+  "files": ["lib"],
   "author": "Alexey Litvinov",
   "repository": {
     "type": "git",
