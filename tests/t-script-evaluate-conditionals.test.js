@@ -1,15 +1,8 @@
 /* globals expect,test */
 'use strict'
 
-const babel = require('@babel/core')
-
-const pluginUnfoldCondition = require('../lib/t-babel-unfold-condition')
-
-async function transform (content, plugins) {
-  const options = { ast: false, cloneInputAst: false, code: true, plugins: plugins }
-  const result = await babel.transformAsync(content, options)
-  return result.code
-}
+const { transformScript } = require('./utils')
+const evaluateConditionalsScriptPlugin = require('../lib/t-script-evaluate-conditionals')
 
 test('evaluate unary and binary operators', async () => {
   const code = `
@@ -36,28 +29,26 @@ test('evaluate unary and binary operators', async () => {
     if (false || true) {}
   `
   const expected = `
-/* falsy */
-
-/* truthy */
-if (!!1) {}
-
-if (!0) {}
-
-if ('a' != 'b') {}
-
-if ('a' !== 'b') {}
-
-if ('a' && true) {}
-
-if ('a' == 'a') {}
-
-if ('a' === 'a') {}
-
-if (false || true) {}
+if (!!1) {
+}
+if (!0) {
+}
+if ('a' != 'b') {
+}
+if ('a' !== 'b') {
+}
+if ('a' && true) {
+}
+if ('a' == 'a') {
+}
+if ('a' === 'a') {
+}
+if (false || true) {
+}
 
   `.trim()
 
-  const result = await transform(code, [pluginUnfoldCondition()])
+  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
   expect(result).toBe(expected)
 })
 
@@ -78,17 +69,15 @@ test('evaluate literals', async () => {
     if (true) {}
   `
   const expected = `
-/* falsy */
-
-/* truthy */
-if ('a') {}
-
-if (1) {}
-
-if (true) {}
+if ('a') {
+}
+if (1) {
+}
+if (true) {
+}
   `.trim()
 
-  const result = await transform(code, [pluginUnfoldCondition()])
+  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
   expect(result).toBe(expected)
 })
 
@@ -102,19 +91,17 @@ test('handle branches', async () => {
   `
   const expected = `
 {
-  b();
+    b();
 }
-
 if (true) {
-  a();
-} else {}
-
+    a();
+}
 if (true) {
-  b();
-} else {}
+    b();
+}
   `.trim()
 
-  const result = await transform(code, [pluginUnfoldCondition()])
+  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
   expect(result).toBe(expected)
 })
 
@@ -125,10 +112,9 @@ test('undefined identifier', async () => {
   `
   const expected = `
 if (!undefined) {
-  /* 2 */
 }
   `.trim()
 
-  const result = await transform(code, [pluginUnfoldCondition()])
+  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
   expect(result).toBe(expected)
 })

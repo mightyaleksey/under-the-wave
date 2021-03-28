@@ -6,27 +6,42 @@ const path = require('path')
 const Resolver = require('../lib/resolver')
 const UrlMapper = require('../lib/url-mapper')
 
-const projectRelative = abspath => path.relative(path.join(__dirname, '..'), abspath)
+const projectScope = path.join(__dirname, '..')
+const fromProject = p => path.join(projectScope, p)
 
-test('transform file into url', async () => {
-  const urlmapper = new UrlMapper({ base: __dirname })
-  const file = path.join(__dirname, 'a', 'b')
-  expect(urlmapper.url(file)).toBe('/a/b')
+test('map file to url', () => {
+  const urlmapper = new UrlMapper('/home')
+  expect(urlmapper.url('/home/a')).toBe('/a')
 })
 
-test('transform url into file', async () => {
-  const urlmapper = new UrlMapper({ base: __dirname })
-  expect(projectRelative(urlmapper.file('/a/b'))).toBe('tests/a/b')
+test('map url to file', () => {
+  const urlmapper = new UrlMapper('/home')
+  expect(urlmapper.file('/a')).toBe('/home/a')
 })
 
-test('should precompute aliases and resolve file', async () => {
+test('apply aliases for modules out of project scope', () => {
   const resolver = new Resolver()
-  const urlmapper = new UrlMapper({
-    alias: true,
-    base: __dirname,
-    nodeModules: d => resolver.nodeModules(d)
-  })
+  const urlmapper = new UrlMapper(
+    __dirname,
+    dirname => resolver.nodeModules(dirname)
+  )
 
-  // should resolve to project root node_modules folder
-  expect(projectRelative(urlmapper.file('/~nma/a'))).toBe('node_modules/a')
+  expect(urlmapper.url(fromProject('node_modules/a'))).toBe('/~nma/a')
+})
+
+test('unfold aliases', () => {
+  const resolver = new Resolver()
+  const urlmapper = new UrlMapper(
+    __dirname,
+    dirname => resolver.nodeModules(dirname)
+  )
+
+  expect(urlmapper.file('/~nma/a')).toBe(fromProject('node_modules/a'))
+})
+
+test('prettify paths', () => {
+  const urlmapper = new UrlMapper('/home')
+  expect(urlmapper.url('/home/a/a.js', '/home/index.js')).toBe('./a/a.js')
+  expect(urlmapper.url('/home/a/b/b.js', '/home/index.js')).toBe('./a/b/b.js')
+  expect(urlmapper.url('/home/index.js', '/home/a/a.js')).toBe('/index.js')
 })

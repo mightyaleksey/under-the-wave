@@ -4,11 +4,14 @@
 const assert = require('assert')
 const path = require('path')
 
+const { ListItem } = require('../lib/data-structures')
 const { nodeModulesPaths, requireResolveSync } = require('../lib/resolver-utils')
+
+const fileExts = ListItem.from('', '.js', '.json')
 
 function requireResolve (to, from) {
   const cache = {}
-  const abspath = requireResolveSync(to, from, cache)
+  const abspath = requireResolveSync(to, from, fileExts, cache)
   assert(abspath != null, `requireResolve: failed to resolve "${to}"`)
   return path.relative(__dirname, abspath)
 }
@@ -24,7 +27,7 @@ test('nodeModulesPaths returns list of node_modules folders', () => {
 test('nodeModulesPaths should use cache on the next iteration', () => {
   jest.resetModules()
 
-  const futils = require('../lib/file-utils')
+  const futils = require('../lib/fs-utils')
   const spy = jest.spyOn(futils, 'isdirsync')
 
   const { nodeModulesPaths: nodeModules } = jest.requireActual('../lib/resolver-utils')
