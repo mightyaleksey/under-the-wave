@@ -5,7 +5,8 @@
     "under-the-wave": "./lib/bin.js"
   },
   "files": [
-    "lib"
+    "lib",
+    "public"
   ],
   "author": "Alexey Litvinov",
   "repository": {
@@ -37,6 +38,7 @@
     ]
   },
   "scripts": {
+    "bench:walk": "ls benchmark/walk-* | xargs -I % node %",
     "start": "node lib/bin.js page",
     "test": "jest"
   }

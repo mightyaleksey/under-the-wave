@@ -22,7 +22,7 @@ console.log('b');
   expect(result).toBe(expected)
 })
 
-test.skip('respect already defined process variable', async () => {
+test('respect already defined process variable', async () => {
   const env = { a: 'abc' }
 
   const code = `
