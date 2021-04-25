@@ -1,6 +1,4 @@
+.cache
+.dist
 .DS_Store
-/.dist
-/benchmark/node_modules
-/benchmark/package-lock.json
 /node_modules
-/package-lock.json

@@ -1,8 +1,10 @@
-import { createElement as e } from 'react'
+import * as React from 'react'
 import { render } from 'react-dom'
 
 function App () {
-  return e('span', null, 'hello')
+  return (
+    <span>hello</span>
+  )
 }
 
-render(e(App), document.querySelector('#container'))
+render(<App />, document.querySelector('#a'))

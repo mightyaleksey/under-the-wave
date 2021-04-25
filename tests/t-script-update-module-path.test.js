@@ -1,24 +1,21 @@
-/* globals expect,test */
+/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
-const path = require('path')
+const updateModulePathScriptPlugin = require('../plugins/t-script-update-module-path')
+const { createContext, transformScript } = require('./_utils')
 
-const { transformScript } = require('./utils')
-const updateModulePathScriptPlugin = require('../lib/t-script-update-module-path')
-
-test('inline process.env values', async () => {
-  const abspath = '/'
-  const resolve = (a, b) => path.resolve(a, b)
-
+test('update import paths', async () => {
   const code = `
     import a from './a'
     import './b'
   `
   const expected = `
-import a from '/a';
-import '/b';
+import a from "/a";
+import "/b";
   `.trim()
 
-  const result = await transformScript(code, updateModulePathScriptPlugin(abspath, resolve))
-  expect(result).toBe(expected)
+  const plugin = updateModulePathScriptPlugin(
+    createContext()
+  )
+  expect(await transformScript(code, plugin)).toBe(expected)
 })

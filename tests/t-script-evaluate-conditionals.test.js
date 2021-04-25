@@ -1,13 +1,14 @@
-/* globals expect,test */
+/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
-const { transformScript } = require('./utils')
-const evaluateConditionalsScriptPlugin = require('../lib/t-script-evaluate-conditionals')
+const evaluateConditionalsScriptPlugin = require('../plugins/t-script-evaluate-conditionals')
+const { createContext, transformScript } = require('./_utils')
 
 test('evaluate unary and binary operators', async () => {
   const code = `
     /* falsy */
 
+    if (!!!1) {}
     if (!!0) {}
     if (!'a') {}
     if ('a' != 'a') {}
@@ -19,6 +20,7 @@ test('evaluate unary and binary operators', async () => {
 
     /* truthy */
 
+    if (!!!0) {}
     if (!!1) {}
     if (!0) {}
     if ('a' != 'b') {}
@@ -29,27 +31,32 @@ test('evaluate unary and binary operators', async () => {
     if (false || true) {}
   `
   const expected = `
-if (!!1) {
-}
-if (!0) {
-}
-if ('a' != 'b') {
-}
-if ('a' !== 'b') {
-}
-if ('a' && true) {
-}
-if ('a' == 'a') {
-}
-if ('a' === 'a') {
-}
-if (false || true) {
-}
+/* falsy */
 
+/* truthy */
+if (!!!0) {}
+
+if (!!1) {}
+
+if (!0) {}
+
+if ('a' != 'b') {}
+
+if ('a' !== 'b') {}
+
+if ('a' && true) {}
+
+if ('a' == 'a') {}
+
+if ('a' === 'a') {}
+
+if (false || true) {}
   `.trim()
 
-  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
-  expect(result).toBe(expected)
+  const plugin = evaluateConditionalsScriptPlugin(
+    createContext()
+  )
+  expect(await transformScript(code, plugin)).toBe(expected)
 })
 
 test('evaluate literals', async () => {
@@ -69,16 +76,20 @@ test('evaluate literals', async () => {
     if (true) {}
   `
   const expected = `
-if ('a') {
-}
-if (1) {
-}
-if (true) {
-}
+/* falsy */
+
+/* truthy */
+if ('a') {}
+
+if (1) {}
+
+if (true) {}
   `.trim()
 
-  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
-  expect(result).toBe(expected)
+  const plugin = evaluateConditionalsScriptPlugin(
+    createContext()
+  )
+  expect(await transformScript(code, plugin)).toBe(expected)
 })
 
 test('handle branches', async () => {
@@ -91,18 +102,22 @@ test('handle branches', async () => {
   `
   const expected = `
 {
-    b();
+  b();
 }
+
 if (true) {
-    a();
-}
+  a();
+} else {}
+
 if (true) {
-    b();
-}
+  b();
+} else {}
   `.trim()
 
-  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
-  expect(result).toBe(expected)
+  const plugin = evaluateConditionalsScriptPlugin(
+    createContext()
+  )
+  expect(await transformScript(code, plugin)).toBe(expected)
 })
 
 test('undefined identifier', async () => {
@@ -112,9 +127,12 @@ test('undefined identifier', async () => {
   `
   const expected = `
 if (!undefined) {
+  /* 2 */
 }
   `.trim()
 
-  const result = await transformScript(code, evaluateConditionalsScriptPlugin())
-  expect(result).toBe(expected)
+  const plugin = evaluateConditionalsScriptPlugin(
+    createContext()
+  )
+  expect(await transformScript(code, plugin)).toBe(expected)
 })
