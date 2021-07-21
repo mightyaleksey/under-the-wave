@@ -1,30 +1,32 @@
 'use strict'
 
 const fm = require('yaml-front-matter')
-const fs = require('fs')
 const marked = require('marked')
-const path = require('path')
 const posthtml = require('posthtml')
 
-// example of external plugin
 module.exports = {
   extensions: ['.md'],
-  type: 'html',
-  transform: transformMarkdown
+  for: '.html',
+  transform: transformMarkdownPlugin,
+  type: 'markdown'
 }
 
-function transformMarkdown (string, context, done) {
-  const attrs = fm.loadFront(string)
-  const markup = marked(attrs.__content)
-  if (attrs.layout == null) {
+function transformMarkdownPlugin (string, context, done) {
+  const meta = fm.loadFront(string)
+  const markup = marked(meta.__content)
+  if (meta.layout == null) {
     done(null, markup)
     return
   }
 
-  const filepath = path.resolve(path.dirname(context.abspath), attrs.layout)
-  fs.promises.readFile(filepath, 'utf8').then(template =>
-    posthtml(markdownPlugin(markup)).process(template)
-  ).then(r => done(null, r.html), done)
+  context.request(meta.layout)
+    .then(buffer => {
+      const template = buffer.toString('utf8')
+      // keep in mind that matching html plugins will be applied one more time after,
+      // thus some plugins may be applied twice
+      return posthtml(markdownPlugin(markup)).process(template)
+    })
+    .then(result => done(null, result.html), done)
 }
 
 function markdownPlugin (markup) {

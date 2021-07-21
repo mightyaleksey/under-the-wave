@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const injectBridgeMarkupPlugin = require('../plugins/t-markup-inject-bridge')
-const { createContext, transformMarkup } = require('./_utils')
+const { createTestContext, transformMarkup } = require('./_utils')
 
 test('inject bridge script into head', async () => {
   const code = `
@@ -19,16 +21,17 @@ test('inject bridge script into head', async () => {
     <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <script type="module" src="/~/bridge/" async></script>
+        <script type="module" src="/~/bridge.js" async></script>
       </head>
       <body></body>
     </html>
   `
 
   const plugin = injectBridgeMarkupPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformMarkup(code, plugin)).toBe(expected)
+
+  assert.is(await transformMarkup(code, plugin), expected)
 })
 
 test('inject bridge script into minified head', async () => {
@@ -42,13 +45,16 @@ test('inject bridge script into minified head', async () => {
   const expected = `
     <!DOCTYPE html>
     <html lang="en">
-      <head><meta charset="UTF-8"><script type="module" src="/~/bridge/" async></script></head>
+      <head><meta charset="UTF-8"><script type="module" src="/~/bridge.js" async></script></head>
       <body></body>
     </html>
   `
 
   const plugin = injectBridgeMarkupPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformMarkup(code, plugin)).toBe(expected)
+
+  assert.is(await transformMarkup(code, plugin), expected)
 })
+
+test.run()

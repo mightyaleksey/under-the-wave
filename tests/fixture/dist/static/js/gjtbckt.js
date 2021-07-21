@@ -1,0 +1,1 @@
+import*as React from"/static/js/crlbuqu.js";import{render}from"/static/js/lueegda.js";function App(){const[e,t]=React.useState(0);return React.createElement("div",null,React.createElement("button",{onClick:()=>t(e+1)},"Increment"),React.createElement("span",null,e))}render(React.createElement(App,null),document.querySelector("#counter"));

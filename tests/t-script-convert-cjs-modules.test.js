@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const convertCjsModulesScriptPlugin = require('../plugins/t-script-convert-cjs-modules')
-const { createContext, transformScript } = require('./_utils')
+const { createTestContext, transformScript } = require('./_utils')
 
 test('handle require calls', async () => {
   const code = `
@@ -25,9 +27,10 @@ var b = _b;
   `.trim()
 
   const plugin = convertCjsModulesScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('handle exports = require()', async () => {
@@ -42,9 +45,10 @@ export * from "a";
   `.trim()
 
   const plugin = convertCjsModulesScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('handle exports', async () => {
@@ -69,9 +73,10 @@ export { _a as default, _b as b };
   `.trim()
 
   const plugin = convertCjsModulesScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('real world', async () => {
@@ -91,7 +96,10 @@ export { _a as Fragment };
   `.trim()
 
   const plugin = convertCjsModulesScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
+
+test.run()

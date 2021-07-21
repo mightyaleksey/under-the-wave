@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const updateAssetPathMarkupPlugin = require('../plugins/t-markup-update-asset-path')
-const { createContext, transformMarkup } = require('./_utils')
+const { createTestContext, transformMarkup } = require('./_utils')
 
 test('handle generic cases', async () => {
   const code = `
@@ -19,9 +21,10 @@ test('handle generic cases', async () => {
   `
 
   const plugin = updateAssetPathMarkupPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformMarkup(code, plugin)).toBe(expected)
+
+  assert.is(await transformMarkup(code, plugin), expected)
 })
 
 test('handle audio and video', async () => {
@@ -47,7 +50,10 @@ test('handle audio and video', async () => {
   `
 
   const plugin = updateAssetPathMarkupPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformMarkup(code, plugin)).toBe(expected)
+
+  assert.is(await transformMarkup(code, plugin), expected)
 })
+
+test.run()

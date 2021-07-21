@@ -1,8 +1,7 @@
 'use strict'
 
-const generate = require('@babel/generator').default
-const parse = require('@babel/core').parseSync
-const transform = require('@babel/core').transformFromAstSync
+// https://babeljs.io/docs/en/usage#core-library
+const { transformSync } = require('@babel/core')
 
 const modulePlugins = [
   require('./t-script-inline-process-env'),
@@ -13,53 +12,40 @@ const modulePlugins = [
 
 module.exports = {
   extensions: ['.js', '.mjs'],
-  type: 'js',
-  parse: parseScriptCorePlugin,
+  for: '.js',
   transform: transformScriptCorePlugin,
-  stringify: stringifyScriptCorePlugin
+  type: 'script'
 }
 
-function parseScriptCorePlugin (string, context, done) {
-  const babel = context.settings.babel
-  // https://babeljs.io/docs/en/babel-parser#options
-  const options = {
-    parserOpts: {
-      sourceFilename: context.abspath,
-      sourceType: 'module'
-    },
-    plugins: babel.plugins,
-    presets: babel.presets
-  }
+function transformScriptCorePlugin (string, context, done) {
+  const packagePlugins = context.settings.babel?.plugins ?? []
+  const packagePresets = context.settings.babel?.presets ?? []
 
-  done(null, parse(string, options))
-}
-
-function transformScriptCorePlugin (ast, context, done) {
-  const babel = context.settings.babel
   // https://babeljs.io/docs/en/options
   const options = {
-    ast: true,
+    // primary
+    cwd: context.settings.scope,
+    code: true,
+    ast: false,
     cloneInputAst: false,
-    code: false,
-    plugins: modulePlugins.map(plugin => plugin(context)).concat(babel.plugins),
-    presets: babel.presets
+    // config
+    babelrc: false,
+    configFile: false,
+    // plugins & presets
+    plugins: modulePlugins.map(plugin => plugin(context)).concat(packagePlugins),
+    presets: packagePresets,
+    // misc
+    sourceType: 'module',
+    parserOpts: {}, // https://babeljs.io/docs/en/babel-parser#options
+    generatorOpts: { // https://babeljs.io/docs/en/options/#code-generator-options
+      retainLines: true,
+      compact: false,
+      minified: false,
+      comments: true
+    }
   }
 
-  const r = transform(ast, null, options)
+  const result = transformSync(string, options)
 
-  done(null, r.ast)
-}
-
-function stringifyScriptCorePlugin (ast, context, done) {
-  // https://babeljs.io/docs/en/babel-generator#options
-  const options = {
-    comments: true,
-    compact: false,
-    retainLines: true,
-    minified: false,
-    filename: context.abspath
-  }
-
-  const r = generate(ast, options)
-  done(null, r.code)
+  done(null, result.code)
 }

@@ -1,7 +1,0 @@
-{
-  "wave": {
-    "babel": {
-      "presets": ["@babel/preset-react"]
-    }
-  }
-}

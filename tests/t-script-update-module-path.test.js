@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const updateModulePathScriptPlugin = require('../plugins/t-script-update-module-path')
-const { createContext, transformScript } = require('./_utils')
+const { createTestContext, transformScript } = require('./_utils')
 
 test('update import paths', async () => {
   const code = `
@@ -15,7 +17,8 @@ import "/b";
   `.trim()
 
   const plugin = updateModulePathScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })

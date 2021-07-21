@@ -13,8 +13,9 @@ const servePlugins = [
 
 module.exports = {
   extensions: ['.htm', '.html'],
-  type: 'html',
-  transform: transformMarkupCorePlugin
+  for: '.html',
+  transform: transformMarkupCorePlugin,
+  type: 'markup'
 }
 
 function transformMarkupCorePlugin (string, context, done) {

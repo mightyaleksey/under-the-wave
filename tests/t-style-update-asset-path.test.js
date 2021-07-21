@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const updateAssetPathStylePlugin = require('../plugins/t-style-update-asset-path')
-const { createContext, transformStyle } = require('./_utils')
+const { createTestContext, transformStyle } = require('./_utils')
 
 test('handle url', async () => {
   const code = `
@@ -16,7 +18,10 @@ test('handle url', async () => {
   `.trim()
 
   const plugin = updateAssetPathStylePlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformStyle(code, plugin)).toBe(expected)
+
+  assert.is(await transformStyle(code, plugin), expected)
 })
+
+test.run()

@@ -1,8 +1,10 @@
-/* globals expect,jest,test */// eslint-disable-line no-unused-vars
 'use strict'
 
+const assert = require('uvu/assert')
+const { test } = require('uvu')
+
 const evaluateConditionalsScriptPlugin = require('../plugins/t-script-evaluate-conditionals')
-const { createContext, transformScript } = require('./_utils')
+const { createTestContext, transformScript } = require('./_utils')
 
 test('evaluate unary and binary operators', async () => {
   const code = `
@@ -54,9 +56,10 @@ if (false || true) {}
   `.trim()
 
   const plugin = evaluateConditionalsScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('evaluate literals', async () => {
@@ -87,9 +90,10 @@ if (true) {}
   `.trim()
 
   const plugin = evaluateConditionalsScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('handle branches', async () => {
@@ -115,9 +119,10 @@ if (true) {
   `.trim()
 
   const plugin = evaluateConditionalsScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
 
 test('undefined identifier', async () => {
@@ -132,7 +137,10 @@ if (!undefined) {
   `.trim()
 
   const plugin = evaluateConditionalsScriptPlugin(
-    createContext()
+    createTestContext()
   )
-  expect(await transformScript(code, plugin)).toBe(expected)
+
+  assert.is(await transformScript(code, plugin), expected)
 })
+
+test.run()

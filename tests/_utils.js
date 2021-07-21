@@ -2,36 +2,56 @@
 
 const babel = require('@babel/core')
 const csstree = require('css-tree')
+const http = require('http')
 const posthtml = require('posthtml')
-const path = require('path')
 
-const { Asset } = require('../lib/data-structures')
-const { TestContext } = require('../lib/shared')
-const { createTestEnv } = require('../lib/environment')
+const { createTestEnv } = require('../lib/util-env')
 
-function createContext (abspath, customEnv) {
-  const asset = Asset.from(abspath ?? '/app.js')
-  const env = createTestEnv(customEnv)
+function curl (port, message) {
+  const options = {
+    hostname: 'localhost',
+    port: port,
+    path: `/${encodeURIComponent(message)}`,
+    method: 'GET',
+    headers: {}
+  }
 
-  return new TestContext({ asset, env })
+  const req = http.request(options)
+
+  req.end()
+
+  return new Promise(resolve => req.once('close', resolve))
 }
 
-function createUrlMap (wd) {
-  if (wd == null) wd = '/'
-  return {
-    find (url, referrer) {
-      return path.join(wd, url)
-    },
+function delay (ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
-    url (abspath, referrer) {
-      return '/' + path.relative(wd, abspath)
-    }
+class TestContext {
+  constructor (options) {
+    this.abspath = options.abspath ?? '/www/index.html'
+    this.env = createTestEnv(options.env)
+    this.settings = { scope: '/www' }
+    this.type = 'test'
   }
+
+  request (url) {
+    return new Promise(resolve => resolve(''))
+  }
+
+  resolve (url) {
+    if (url.startsWith('./')) url = url.replace('.', '')
+    return url
+  }
+}
+
+function createTestContext (abspath, env) {
+  return new TestContext({ abspath, env })
 }
 
 async function transformMarkup (string, plugins) {
   if (plugins != null && !Array.isArray(plugins)) plugins = [plugins]
-  return (await posthtml(plugins).process(string)).html
+  return posthtml(plugins).process(string).then(r => r.html)
 }
 
 async function transformScript (string, plugins) {
@@ -46,8 +66,9 @@ async function transformStyle (string, plugin) {
 }
 
 module.exports = {
-  createContext,
-  createUrlMap,
+  curl,
+  delay,
+  createTestContext,
   transformMarkup,
   transformScript,
   transformStyle

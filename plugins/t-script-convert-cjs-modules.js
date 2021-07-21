@@ -2,7 +2,7 @@
 
 // cyclic dependency from a directory,
 // as a temp solution is ok, but better to fix
-const { abc } = require('../lib/hash-utils')
+const { abc } = require('../lib/util-hash')
 const t = require('./t-script-utils-type')
 
 function convertCjsModulesScriptPlugin () {

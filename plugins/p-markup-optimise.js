@@ -17,10 +17,11 @@ const options = {
 
 module.exports = {
   extensions: ['.htm', '.html'],
-  type: 'html',
-  transform: transformMarkupOptimisePlugin
+  for: '.html',
+  transform: transformMarkupOptimiseCorePlugin,
+  type: 'markup optimise'
 }
 
-function transformMarkupOptimisePlugin (string, context, done) {
+function transformMarkupOptimiseCorePlugin (string, context, done) {
   done(null, minifier.minify(string, options))
 }
