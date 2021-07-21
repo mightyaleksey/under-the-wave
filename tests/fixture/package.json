@@ -1,7 +1,9 @@
 {
   "name": "demo-page",
   "babel": {
-    "presets": ["@babel/preset-react"]
+    "presets": [
+      "@babel/preset-react"
+    ]
   },
   "dependencies": {
     "@babel/preset-react": "7.14.5",

@@ -1,1 +1,0 @@
-import*as React from"/static/js/crlbuqu.js";import{render}from"/static/js/lueegda.js";function App(){return React.createElement("span",null,"hello")}render(React.createElement(App,null),document.querySelector("#hello"));
