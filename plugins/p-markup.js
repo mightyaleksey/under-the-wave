@@ -19,7 +19,7 @@ module.exports = {
 }
 
 function transformMarkupCorePlugin (string, context, done) {
-  const list = context.type === 'serve' ? servePlugins : buildPlugins
+  const list = context.cmd === 'serve' ? servePlugins : buildPlugins
   const plugins = list.map(plugin => plugin(context))
   posthtml(plugins).process(string).then(r => done(null, r.html), done)
 }

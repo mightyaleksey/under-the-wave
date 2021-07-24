@@ -4,29 +4,7 @@ const assert = require('uvu/assert')
 const { inspect } = require('util')
 const { test } = require('uvu')
 
-const { Asset, ListItem } = require('../lib/core-data-structures')
-
-test('Asset', () => {
-  const asset = new Asset('/app.js')
-  assert.is(asset.outputPath, null)
-  assert.is(asset.path, '/app.js')
-  assert.is(asset.type, 'js')
-})
-
-test('Asset.from', () => {
-  assert.equal(Asset.from('/app.js'), new Asset('/app.js'))
-})
-
-test('Asset.type', () => {
-  assert.is(Asset.type('/app.css'), 'css')
-  assert.is(Asset.type('/app.html'), 'html')
-  assert.is(Asset.type('/app.js'), 'js')
-})
-
-test('Asset inspect', () => {
-  const string = inspect(Asset.from('/app.js'))
-  assert.is(string, 'Asset → js → \'/app.js\'')
-})
+const { ListItem } = require('../lib/core-data-structures')
 
 test('ListItem', () => {
   const item = new ListItem(1)

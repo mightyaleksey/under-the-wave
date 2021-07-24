@@ -10,12 +10,7 @@ test('Processing inspect', () => {
   const processing = new Processing({ cmd: 'test', url: '/index.html', abspath: '/www/index.html', plugins: [] })
 
   const string = inspect(processing)
-  const output = [
-    'Processing:',
-    '- url → \'/index.html\'',
-    '- abspath → \'/www/index.html\'',
-    '- plugins → []'
-  ].join('\n')
+  const output = 'Processing → { url: \'/index.html\', abspath: \'/www/index.html\', plugins: [] }'
 
   assert.is(string, output)
 })

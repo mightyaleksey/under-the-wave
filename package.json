@@ -1,6 +1,6 @@
 {
   "name": "under-the-wave",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "bin": {
     "under-the-wave": "./lib/bin.js",
     "wave": "./lib/bin.js"

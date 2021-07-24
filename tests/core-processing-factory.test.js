@@ -15,7 +15,7 @@ test('ProcessingFactory.create returns processing instance', () => {
   const processingFactory = new ProcessingFactory({ plugins })
   processingFactory.cmd = 'test'
 
-  const processing = processingFactory.create('./static/hello.js', referer)
+  const processing = processingFactory.resolve('./static/hello.js', referer)
 
   assert.instance(processing, Processing)
   assert.is(processing.url, './static/hello.js')
@@ -29,7 +29,7 @@ test('ProcessingFactory.create maps ".html" file to ".md"', () => {
   processingFactory.cmd = 'test'
 
   assert.not.ok(plugin.extensions.includes(plugin.for))
-  assert.instance(processingFactory.create('./readme.html', referer), Processing)
+  assert.instance(processingFactory.resolve('./readme.html', referer), Processing)
 })
 
 test.run()

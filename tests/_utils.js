@@ -33,10 +33,12 @@ class TestContext {
     this.env = createTestEnv(options.env)
     this.settings = { scope: '/www' }
     this.type = 'test'
+
+    this._request = options.request ?? ''
   }
 
   request (url) {
-    return new Promise(resolve => resolve(''))
+    return new Promise(resolve => resolve(this._request))
   }
 
   resolve (url) {
@@ -45,8 +47,19 @@ class TestContext {
   }
 }
 
-function createTestContext (abspath, env) {
-  return new TestContext({ abspath, env })
+function createTestContext (abspath, env, request) {
+  return new TestContext({ abspath, env, request })
+}
+
+function invokePlugin (plugin, string, context) {
+  return new Promise((resolve, reject) => {
+    function done (err, data) {
+      if (err) reject(err)
+      else resolve(data)
+    }
+
+    plugin.transform(string, context, done)
+  })
 }
 
 async function transformMarkup (string, plugins) {
@@ -69,6 +82,7 @@ module.exports = {
   curl,
   delay,
   createTestContext,
+  invokePlugin,
   transformMarkup,
   transformScript,
   transformStyle

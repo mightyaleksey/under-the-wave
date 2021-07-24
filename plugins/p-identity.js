@@ -8,5 +8,6 @@ module.exports = {
 }
 
 function identity (string, context, done) {
-  done(null, string)
+  // skipping identity plugin helps to avoid issues with encoding for binary files
+  done(new Error('identity plugin should be skipped'))
 }
