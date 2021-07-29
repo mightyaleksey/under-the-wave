@@ -1,6 +1,6 @@
 'use strict'
 
-const bridgeUrl = '/~/bridge.js'
+const bridgeUrl = '/-internal-/bridge.js'
 const indent = /^[\n\s]+$/
 
 const scriptNode = {

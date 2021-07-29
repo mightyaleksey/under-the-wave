@@ -21,13 +21,18 @@ function transformMarkdownPlugin (string, context, done) {
     return
   }
 
-  context.request(meta.layout)
-    .then(buffer => {
-      const template = buffer.toString('utf8')
-      // keep in mind that matching html plugins will be applied one more time after,
-      // thus some plugins may be applied twice
-      return posthtml(markdownPlugin(meta.__content)).process(template)
-    })
+  const file = context.request(meta.layout)
+  if (file == null) {
+    done(new Error('request failed for "' + meta.layout + '"'))
+    return
+  }
+
+  file.then(buffer => {
+    const template = buffer.toString('utf8')
+    // keep in mind that matching html plugins will be applied one more time after,
+    // thus some plugins may be applied twice
+    return posthtml(markdownPlugin(meta.__content)).process(template)
+  })
     .then(result => done(null, result.html), done)
 }
 

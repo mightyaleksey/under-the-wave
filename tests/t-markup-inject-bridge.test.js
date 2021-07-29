@@ -21,7 +21,7 @@ test('inject bridge script into head', async () => {
     <html lang="en">
       <head>
         <meta charset="UTF-8">
-        <script type="module" src="/~/bridge.js" async></script>
+        <script type="module" src="/-internal-/bridge.js" async></script>
       </head>
       <body></body>
     </html>
@@ -45,7 +45,7 @@ test('inject bridge script into minified head', async () => {
   const expected = `
     <!DOCTYPE html>
     <html lang="en">
-      <head><meta charset="UTF-8"><script type="module" src="/~/bridge.js" async></script></head>
+      <head><meta charset="UTF-8"><script type="module" src="/-internal-/bridge.js" async></script></head>
       <body></body>
     </html>
   `

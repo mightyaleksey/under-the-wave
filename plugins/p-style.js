@@ -6,8 +6,9 @@ const updateAssetPathStylePlugin = require('./t-style-update-asset-path')
 
 module.exports = {
   extensions: ['.css'],
-  type: 'css',
-  transform: transformStyleCorePlugin
+  for: '.css',
+  transform: transformStyleCorePlugin,
+  type: 'style'
 }
 
 function transformStyleCorePlugin (string, context, done) {
