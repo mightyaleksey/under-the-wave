@@ -9,12 +9,13 @@ const { createTestContext, transformStyle } = require('./_utils')
 test('handle url', async () => {
   const code = `
     body {
-      background-image: url(./bg1.jpg);
-      background-image: url('./bg2.jpg');
+      background-image: url('./bg1.jpg');
+      background-image: url(./bg2.jpg);
+      background-image: url(bg3.jpg);
     }
   `
   const expected = `
-    body{background-image:url(/bg1.jpg);background-image:url(/bg2.jpg)}
+    body{background-image:url(/bg1.jpg);background-image:url(/bg2.jpg);background-image:url(bg3.jpg)}
   `.trim()
 
   const plugin = updateAssetPathStylePlugin(
