@@ -19,6 +19,11 @@ test('ListItem.from', () => {
   assert.equal(list, head)
 })
 
+test('ListItem generator', () => {
+  const list = ListItem.from(1, 2, 3)
+  assert.equal([...list.values()], [1, 2, 3])
+})
+
 test('ListItem iterator', () => {
   const list = ListItem.from(1, 2, 3)
   assert.equal([...list], [1, 2, 3])

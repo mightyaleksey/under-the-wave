@@ -1,6 +1,7 @@
 'use strict'
 
 const fm = require('yaml-front-matter')
+const hl = require('highlight.js')
 const marked = require('marked')
 const posthtml = require('posthtml')
 
@@ -39,10 +40,16 @@ function transformMarkdownPlugin (string, context, done) {
 function markdownPlugin (content) {
   return tree => tree.walk(node => {
     if (node.tag === 'markdown') {
-      const options = { renderer: new Renderer(node.attrs) }
+      const options = { highlight: highlightCode, renderer: new Renderer(node.attrs) }
       return marked(content, options)
     }
 
     return node
   })
+}
+
+function highlightCode (code, lang) {
+  const language = hl.getLanguage(lang) ? lang : 'plaintext'
+  const output = hl.highlight(code, { language }).value
+  return output
 }

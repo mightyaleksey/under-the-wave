@@ -4,10 +4,11 @@ const csso = require('csso')
 
 module.exports = {
   extensions: ['.css'],
-  type: 'css',
-  transform: transformStyleOptimisePlugin
+  for: '.css',
+  transform: transformStyleOptimiseCorePlugin,
+  type: 'style optimise'
 }
 
-function transformStyleOptimisePlugin (string, context, done) {
+function transformStyleOptimiseCorePlugin (string, context, done) {
   done(null, csso.minify(string).css)
 }

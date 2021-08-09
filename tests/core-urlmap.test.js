@@ -7,57 +7,36 @@ const { test } = require('uvu')
 const { ListItem } = require('../lib/core-data-structures')
 const { Urlmap } = require('../lib/core-urlmap')
 
-const packageScope = path.resolve(__dirname, 'fixture')
-const referer = path.join(packageScope, '_')
+const testCases = [
+  /* eslint-disable no-multi-spaces */
+  { name: './x',   input: './counter.demo.js', output: 'static/counter.demo.js' },
+  { name: '/~ar',  input: '/~ar/index.html',   output: 'index.html' },
+  { name: '~ar',   input: '~ar/index.html',    output: 'index.html' },
+  { name: '/~/x',  input: '/~/index.html',     output: 'index.html' },
+  { name: '~/x',   input: '~/index.html',      output: 'index.html' },
+  { name: '/x',    input: '/hello.js',         output: 'static/hello.js' },
+  { name: '/p',    input: '/robots.txt',       output: 'public/robots.txt' },
+  { name: 'react', input: 'react',             output: 'node_modules/react/index.js' }
+  /* eslint-enable no-multi-spaces */
+]
 
-const output = path.join(packageScope, 'index.html')
+const scopedir = path.join(__dirname, 'fixture')
+const workdir = path.join(scopedir, 'static')
+const publicdir = path.join(scopedir, 'public')
 
-test('Urlmap.map "./x" path', () => {
-  const aliases = new Map()
-  const urlmap = new Urlmap({ aliases, packageScope })
+const aliases = new Map([['~ar', scopedir]])
+const directories = ListItem.from(scopedir, workdir, publicdir)
+const referer = path.join(workdir, '_')
 
-  assert.is(urlmap.map('./index.html', referer), output)
-})
+for (const { name, input, output } of testCases) {
+  test(`Urlmap.map "${name}"`, () => {
+    const urlmap = new Urlmap({ aliases, directories })
+    const result = urlmap.map(input, referer)
+    assert.ok(result != null)
 
-test('Urlmap.map "/x" path', () => {
-  const aliases = new Map()
-  const urlmap = new Urlmap({ aliases, packageScope })
-
-  assert.is(urlmap.map(output, referer), output)
-})
-
-test('Urlmap.map "~/x" path', () => {
-  const aliases = new Map()
-  const urlmap = new Urlmap({ aliases, packageScope })
-
-  assert.is(urlmap.map('./~/index.html', referer), output)
-  assert.is(urlmap.map('~/index.html', referer), output)
-})
-
-test('Urlmap.map "~st/x" path', () => {
-  const aliasPath = path.join(packageScope, 'static')
-  const aliases = new Map([['~st', aliasPath]])
-  const output = path.join(packageScope, 'static/hello.js')
-  const urlmap = new Urlmap({ aliases, packageScope })
-
-  assert.is(urlmap.map('./~st/hello.js', referer), output)
-  assert.is(urlmap.map('~st/hello.js', referer), output)
-})
-
-test('Urlmap.map → public file', () => {
-  const aliases = new Map()
-  const staticDirs = ListItem.from(path.join(packageScope, 'public'))
-  const output = path.join(packageScope, 'public/robots.txt')
-  const urlmap = new Urlmap({ aliases, packageScope, staticDirs })
-
-  assert.is(urlmap.map('/robots.txt', referer), output)
-})
-
-test('Urlmap.map → "null" for not existing file', () => {
-  const aliases = new Map()
-  const urlmap = new Urlmap({ aliases, packageScope })
-
-  assert.is(urlmap.map('./unknown.html', referer), null)
-})
+    const file = path.relative(scopedir, result)
+    assert.is(file, output)
+  })
+}
 
 test.run()

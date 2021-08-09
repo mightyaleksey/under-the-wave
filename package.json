@@ -1,6 +1,6 @@
 {
   "name": "under-the-wave",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "bin": {
     "under-the-wave": "./lib/bin.js",
     "wave": "./lib/bin.js"
@@ -20,6 +20,7 @@
     "chokidar": "3.5.2",
     "css-tree": "1.1.3",
     "csso": "4.2.0",
+    "highlight.js": "11.2.0",
     "html-minifier": "4.0.0",
     "js-yaml": "3.14.1",
     "marked": "2.1.3",
