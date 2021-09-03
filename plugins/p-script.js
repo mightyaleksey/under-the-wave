@@ -45,7 +45,10 @@ function transformScriptCorePlugin (string, context, done) {
     }
   }
 
-  const result = transformSync(string, options)
-
-  done(null, result.code)
+  try {
+    const result = transformSync(string, options)
+    done(null, result.code)
+  } catch (err) {
+    done(err)
+  }
 }

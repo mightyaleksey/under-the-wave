@@ -12,7 +12,11 @@ module.exports = {
 }
 
 function transformStyleCorePlugin (string, context, done) {
-  const ast = csstree.parse(string)
-  csstree.walk(ast, updateAssetPathStylePlugin(context))
-  done(null, csstree.generate(ast))
+  try {
+    const ast = csstree.parse(string)
+    csstree.walk(ast, updateAssetPathStylePlugin(context))
+    done(null, csstree.generate(ast))
+  } catch (err) {
+    done(err)
+  }
 }
